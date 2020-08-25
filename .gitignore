@@ -28,3 +28,5 @@ target/
 hs_err_pid*
 
 .DS_Store
+*.iml
+build.bat
