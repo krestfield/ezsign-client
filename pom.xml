@@ -18,33 +18,62 @@
 	</licenses>
 
     <properties>
-        <!-- necessary for intellij to function -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
 
     <build>
 		<finalName>${project.name}-${project.version}</finalName>
         <plugins>
-        
              <plugin>
-		<artifactId>maven-jar-plugin</artifactId>
-		<executions>
-		  <execution>
-		    <id>default-jar</id>
-		    <phase>package</phase>
-		    <goals>
-		      <goal>jar</goal>
-		    </goals>
-		    <configuration>
-		      <excludes>
-			<exclude>**/test/**</exclude>
-		      </excludes>
-		    </configuration>
-		  </execution>
-		</executions>
-  	    </plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				 <version>3.2.0</version>
+				<executions>
+				  <execution>
+					<id>default-jar</id>
+					<phase>package</phase>
+					<goals>
+					  <goal>jar</goal>
+					</goals>
+					<configuration>
+					  <excludes>
+					<exclude>**/test/**</exclude>
+					  </excludes>
+					</configuration>
+				  </execution>
+				</executions>
+	  	    </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
         </plugins>
     </build>
+
+	<scm>
+		<url>https://github.com/krestfield/ezsign-client</url>
+	</scm>
 
 </project>
