@@ -9,6 +9,13 @@
     <packaging>jar</packaging>
     <version>4.0.0</version>
 
+	<name>EzSign Client</name>
+	<description>
+		The java client that can be incorporated into java applications to interface to an EzSign or PKCloud server instance
+		Other interfaces available are .NET and REST API (PkCloud only)
+	</description>
+	<url>https://krestfield.com/index.php/pkcloud</url>
+
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -16,6 +23,14 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
+	<developers>
+		<developer>
+			<organization>Krestfield Limited</organization>
+			<organizationUrl>https://krestfield.com</organizationUrl>
+			<timezone>Europe/London</timezone>
+		</developer>
+	</developers>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -65,6 +80,32 @@
 						<phase>verify</phase>
 						<goals>
 							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.2.0</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
 						</goals>
 					</execution>
 				</executions>

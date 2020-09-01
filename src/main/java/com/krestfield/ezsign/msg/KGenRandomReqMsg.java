@@ -15,6 +15,12 @@ public class KGenRandomReqMsg extends KEzSignReqMsg
 
     private int m_numBytes;
 
+    /**
+     *
+     * @param channel The channel name
+     * @param numBytes The number of random bytes
+     * @throws KEzSignException If there is an error
+     */
     public KGenRandomReqMsg(String channel, int numBytes) throws KEzSignException
     {
         super(MESSAGE_ID, channel);

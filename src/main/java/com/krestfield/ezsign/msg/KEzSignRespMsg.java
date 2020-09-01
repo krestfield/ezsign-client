@@ -27,8 +27,8 @@ public class KEzSignRespMsg extends KEzSignMsg
      * Message Format:
      * Message ID (reversed) : Response Code : [Error Msg] : DataItem1 : DataItem2...
      *
-     * @param fullMessage
-     * @throws KEzSignException
+     * @param fullMessage The full message
+     * @throws KEzSignException If there is an error
      */
     public KEzSignRespMsg(String fullMessage) throws KEzSignException
     {
@@ -67,11 +67,19 @@ public class KEzSignRespMsg extends KEzSignMsg
         }
     }
 
+    /**
+     *
+     * @return The response code
+     */
     public int getResponseCode()
     {
         return m_responseCode;
     }
 
+    /**
+     *
+     * @return The error message
+     */
     public String getErrorMessage()
     {
         return m_errorMsg;

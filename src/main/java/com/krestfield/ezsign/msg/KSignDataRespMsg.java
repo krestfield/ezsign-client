@@ -13,6 +13,11 @@ public class KSignDataRespMsg extends KEzSignRespMsg
     private byte[] m_signature;
     private String m_b64Signature;
 
+    /**
+     *
+     * @param fullMessage The complete message
+     * @throws KEzSignException If there is an error
+     */
     public KSignDataRespMsg(String fullMessage) throws KEzSignException
     {
         super(fullMessage);
@@ -37,11 +42,19 @@ public class KSignDataRespMsg extends KEzSignRespMsg
         }
     }
 
+    /**
+     *
+     * @return The signature data
+     */
     public byte[] getSignature()
     {
         return m_signature;
     }
 
+    /**
+     *
+     * @return The signature data formated as Base64
+     */
     public String getB64Signature()
     {
         return m_b64Signature;

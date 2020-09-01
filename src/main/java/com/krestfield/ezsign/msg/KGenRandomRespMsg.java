@@ -17,8 +17,8 @@ public class KGenRandomRespMsg extends KEzSignRespMsg
     /**
      * Constructor
      *
-     * @param fullMessage
-     * @throws KEzSignException
+     * @param fullMessage The complete message
+     * @throws KEzSignException If there is an error
      */
     public KGenRandomRespMsg(String fullMessage) throws KEzSignException
     {
@@ -44,7 +44,7 @@ public class KGenRandomRespMsg extends KEzSignRespMsg
     /**
      * Returns the random byte array
      *
-     * @return
+     * @return The random bytes
      */
     public byte[] getRandomBytes()
     {

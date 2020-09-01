@@ -61,8 +61,8 @@ public class EzSignClient
     /**
      * The Constructor
      *
-     * @param host
-     * @param port
+     * @param host The name of the host to connect to - IP address or hostname
+     * @param port The port the EzSign server is listening on
      */
     public EzSignClient(String host, int port)
     {
@@ -70,6 +70,13 @@ public class EzSignClient
         m_port = port;
     }
 
+    /**
+     *
+     * @param host The name of the host to connect to - IP address or hostname
+     * @param port The port the EzSign server is listening on
+     * @param authCode The auth code - this must be the same as has been configured at the server
+     * @throws KEzSignException If there is an error
+     */
     public EzSignClient(String host, int port, String authCode) throws KEzSignException
     {
         this(host, port);
@@ -79,8 +86,10 @@ public class EzSignClient
     /**
      * The Constructor
      *
-     * @param host
-     * @param port
+     * @param host The name of the host to connect to - IP address or hostname
+     * @param port The port the EzSign server is listening on
+     * @param connectTimeoutInMs The max time in milliseconds to wait before failing the connection
+     * @param readTimeoutInMs The max time in milliseconds to wait for a response
      */
     public EzSignClient(String host, int port, int connectTimeoutInMs, int readTimeoutInMs)
     {
@@ -94,12 +103,27 @@ public class EzSignClient
             m_connectTimeoutMs = connectTimeoutInMs;
     }
 
+    /**
+     *
+     * @param host The name of the host to connect to - IP address or hostname
+     * @param port The port the EzSign server is listening on
+     * @param connectTimeoutInMs The max time in milliseconds to wait before failing the connection
+     * @param readTimeoutInMs The max time in milliseconds to wait for a response
+     * @param authCode The auth code - this must be the same as has been configured at the server
+     * @throws KEzSignException If there is an error
+     */
     public EzSignClient(String host, int port, int connectTimeoutInMs, int readTimeoutInMs, String authCode) throws KEzSignException
     {
         this(host, port, connectTimeoutInMs, readTimeoutInMs);
         setAuthCode(authCode);
     }
 
+    /**
+     * Sets the auth code
+     *
+     * @param authCode The auth code - this must be the same as has been configured at the server
+     * @throws KEzSignException If there is an error
+     */
     private void setAuthCode(String authCode) throws KEzSignException
     {
         if (authCode != null && authCode.length() > 0)
@@ -112,7 +136,7 @@ public class EzSignClient
     /**
      * Sets the host to use
      *
-     * @param host
+     * @param host The name of the host to connect to - IP address or hostname
      */
     public void setHost(String host)
     {
@@ -122,7 +146,7 @@ public class EzSignClient
     /**
      * Returns the hostname currently being used
      *
-     * @return
+     * @return The hostname or IP address
      */
     public String getHost()
     {
@@ -132,7 +156,7 @@ public class EzSignClient
     /**
      * Sets the port to be used
      *
-     * @param port
+     * @param port The port to connect to
      */
     public void setPort(int port)
     {
@@ -142,7 +166,7 @@ public class EzSignClient
     /**
      * Returns the port number currently being used
      *
-     * @return
+     * @return The port to connect to
      */
     public int getPort()
     {
@@ -153,13 +177,13 @@ public class EzSignClient
     /**
      * Generates a signature and returns the produced PKCS#7
      *
-     * @param channelName
-     * @param dataToSign
-     * @param isDigest
-     * @return
-     * @throws KSigningException
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param dataToSign The data to sign
+     * @param isDigest True if the data is a digest (already hashed)
+     * @return The signature
+     * @throws KSigningException If there is a signing exception
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
     public byte[] signData(String channelName, byte[] dataToSign, boolean isDigest) throws KSigningException, KEzSignException, KEzSignConnectException
     {
@@ -186,11 +210,11 @@ public class EzSignClient
     /**
      * Generates the number of random bytes requested
      *
-     * @param channelName
-     * @param numBytes
-     * @return
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param numBytes The number of bytes to generate
+     * @return The random bytes
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
     public byte[] generateRandomBytes(String channelName, int numBytes) throws KEzSignException, KEzSignConnectException
     {
@@ -215,16 +239,15 @@ public class EzSignClient
     /**
      * Verifies a signature
      *
-     * @param channelName
-     * @param signature
-     * @param contentBytes
-     * @param dataIsDigest
-     * @return
-     * @throws KVerificationException
-     * @throws KPathException
-     * @throws KRevocationException
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param signature The PKCS7 signature data to verify
+     * @param contentBytes The content that was signed
+     * @param dataIsDigest True if the data is a digest (already hashed)
+     * @throws KVerificationException If there is a signature verification error
+     * @throws KPathException If there is a path building error
+     * @throws KRevocationException If there is a revocation check error
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
     public void verifySignature(String channelName, byte[] signature, byte[] contentBytes, boolean dataIsDigest)
             throws KVerificationException, KPathException, KRevocationException, KEzSignException, KEzSignConnectException
@@ -236,16 +259,16 @@ public class EzSignClient
     /**
      * Verifies a raw signature
      *
-     * @param channelName
-     * @param signature
-     * @param contentBytes
-     * @param dataIsDigest
-     * @param signerCert
-     * @throws KVerificationException
-     * @throws KPathException
-     * @throws KRevocationException
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param signature The RAW signature data to verify
+     * @param contentBytes The content that was signed
+     * @param dataIsDigest True if the data is a digest (already hashed)
+     * @param signerCert The cert that signed the data
+     * @throws KVerificationException If there is a signature verification error
+     * @throws KPathException If there is a path building error
+     * @throws KRevocationException If there is a revocation check error
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
     public void verifyRawSignature(String channelName, byte[] signature, byte[] contentBytes, boolean dataIsDigest, X509Certificate signerCert)
             throws KVerificationException, KPathException, KRevocationException, KEzSignException, KEzSignConnectException
@@ -257,15 +280,17 @@ public class EzSignClient
     /**
      * Verifies a raw signature.  Allows other certificates in the chain to be supplied
      *
-     * @param channelName
-     * @param signature
-     * @param contentBytes
-     * @param dataIsDigest
-     * @throws KVerificationException
-     * @throws KPathException
-     * @throws KRevocationException
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param signature The RAW signature data to verify
+     * @param contentBytes The content that was signed
+     * @param dataIsDigest True if the data is a digest (already hashed)
+     * @param signerCert The cert that signed the data
+     * @param otherCerts Other certs in the path - required if they are not present on the server
+     * @throws KVerificationException If there is a signature verification error
+     * @throws KPathException If there is a path building error
+     * @throws KRevocationException If there is a revocation check error
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
     public void verifyRawSignature(String channelName, byte[] signature, byte[] contentBytes, boolean dataIsDigest,
                                    X509Certificate signerCert, X509Certificate[] otherCerts)
@@ -279,15 +304,19 @@ public class EzSignClient
      * Verifies a raw signature.  Allows other certificates in the chain to be supplied and
      * the bypassing of revocation checking and path building
      *
-     * @param channelName
-     * @param signature
-     * @param contentBytes
-     * @param dataIsDigest
-     * @throws KVerificationException
-     * @throws KPathException
-     * @throws KRevocationException
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param signature The RAW signature data to verify
+     * @param contentBytes The content that was signed
+     * @param dataIsDigest True if the data is a digest (already hashed)
+     * @param signerCert The cert that signed the data
+     * @param otherCerts Other certs in the path - required if they are not present on the server
+     * @param bypassRevocationCheck If true, revocation checking will be skipped
+     * @param bypassPathBuild If true, path building will be skipped
+     * @throws KVerificationException If there is a signature verification error
+     * @throws KPathException If there is a path building error
+     * @throws KRevocationException If there is a revocation check error
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
     public void verifyRawSignature(String channelName, byte[] signature, byte[] contentBytes, boolean dataIsDigest,
                                    X509Certificate signerCert, X509Certificate[] otherCerts, boolean bypassRevocationCheck,
@@ -301,18 +330,17 @@ public class EzSignClient
     /**
      * Verifies a signature.  Allows the bypassing of revocation checking and path building
      *
-     * @param channelName
-     * @param signature
-     * @param contentBytes
-     * @param dataIsDigest
-     * @param bypassRevocationCheck
-     * @param bypassPathBuild
-     * @return
-     * @throws KVerificationException
-     * @throws KPathException
-     * @throws KRevocationException
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param signature The RAW signature data to verify
+     * @param contentBytes The content that was signed
+     * @param dataIsDigest True if the data is a digest (already hashed)
+     * @param bypassRevocationCheck If true, revocation checking will be skipped
+     * @param bypassPathBuild If true, path building will be skipped
+     * @throws KVerificationException If there is a signature verification error
+     * @throws KPathException If there is a path building error
+     * @throws KRevocationException If there is a revocation check error
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
     public void verifySignature(String channelName, byte[] signature, byte[] contentBytes, boolean dataIsDigest,
                                    boolean bypassRevocationCheck, boolean bypassPathBuild)
@@ -325,17 +353,19 @@ public class EzSignClient
     /**
      * Verifies a raw signature.  Allows the bypassing of revocation checking and path building
      *
-     * @param channelName
-     * @param signature
-     * @param contentBytes
-     * @param dataIsDigest
-     * @param bypassRevocationCheck
-     * @param bypassPathBuild
-     * @throws KVerificationException
-     * @throws KPathException
-     * @throws KRevocationException
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param signature The RAW signature data to verify
+     * @param contentBytes The content that was signed
+     * @param dataIsDigest True if the data is a digest (already hashed)
+     * @param bypassRevocationCheck If true, revocation checking will be skipped
+     * @param bypassPathBuild If true, path building will be skipped
+     * @param signerCert The cert that signed the data
+     * @param otherCerts Other certs in the path - required if they are not present on the server
+     * @throws KVerificationException If there is a signature verification error
+     * @throws KPathException If there is a path building error
+     * @throws KRevocationException If there is a revocation check error
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
     public void verifyRawSignature(String channelName, byte[] signature, byte[] contentBytes, boolean dataIsDigest,
                                    boolean bypassRevocationCheck, boolean bypassPathBuild,
@@ -349,18 +379,18 @@ public class EzSignClient
     /**
      * All verify signature calls ultimately call this method which includes all parameters
      *
-     * @param channelName
-     * @param signature
-     * @param contentBytes
-     * @param dataIsDigest
-     * @param bypassRevocationCheck
-     * @param bypassPathBuild
-     * @param signatureType
-     * @throws KVerificationException
-     * @throws KPathException
-     * @throws KRevocationException
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param signature The RAW signature data to verify
+     * @param contentBytes The content that was signed
+     * @param dataIsDigest True if the data is a digest (already hashed)
+     * @param bypassRevocationCheck If true, revocation checking will be skipped
+     * @param bypassPathBuild If true, path building will be skipped
+     * @param signatureType IF the signature is SIG_TYPE_PKCS7 or SIG_TYPE_RAW
+     * @throws KVerificationException If there is a signature verification error
+     * @throws KPathException If there is a path building error
+     * @throws KRevocationException If there is a revocation check error
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
     private void verifySignature(String channelName, byte[] signature, byte[] contentBytes, boolean dataIsDigest,
                                  boolean bypassRevocationCheck, boolean bypassPathBuild, int signatureType,
@@ -395,13 +425,13 @@ public class EzSignClient
     /**
      * Encrypts the data provided in dataToEncrypt with the key referenced by keyLabel
      *
-     * @param channelName
-     * @param dataToEncrypt
-     * @param keyLabel
-     * @return
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
-     * @throws KEncipherException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param dataToEncrypt The data to encrypt
+     * @param keyLabel The name of the key to perfom the decryption - as configured on the server
+     * @return The encrypted data
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
+     * @throws KEncipherException If there is an error encrypting
      */
     public byte[] encryptData(String channelName, byte[] dataToEncrypt, String keyLabel) throws KEzSignException, KEzSignConnectException, KEncipherException
     {
@@ -429,13 +459,13 @@ public class EzSignClient
     /**
      * Decrypts data previously encrypted with encryptData using the key referenced by keyLabel
      *
-     * @param channelName
-     * @param encryptedData
-     * @param keyLabel
-     * @return
-     * @throws KEzSignException
-     * @throws KEzSignConnectException
-     * @throws KEncipherException
+     * @param channelName The name of the EzSign channel to process the request
+     * @param encryptedData The encrypted data
+     * @param keyLabel The name of the key to perfom the decryption - as configured on the server
+     * @return THe clear data
+     * @throws KEzSignException If there is an error
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
+     * @throws KEncipherException If there is an error decrypting
      */
     public byte[] decryptData(String channelName, byte[] encryptedData, String keyLabel) throws KEzSignException, KEzSignConnectException, KEncipherException
     {
@@ -463,7 +493,7 @@ public class EzSignClient
     /**
      * Connects to the server
      *
-     * @throws KEzSignConnectException
+     * @throws KEzSignConnectException If unable to connect
      */
     private void connect() throws KEzSignConnectException
     {
@@ -525,6 +555,12 @@ public class EzSignClient
         }
     }
 
+    /**
+     *
+     * @param clearMessage The clear data
+     * @return The encrypted data
+     * @throws KEzSignException If there is an error encrypting
+     */
     private String encryptMessage(String clearMessage) throws KEzSignException
     {
         try
@@ -544,6 +580,12 @@ public class EzSignClient
         }
     }
 
+    /**
+     *
+     * @param encMessage The encrypted message
+     * @return The clear message
+     * @throws KEzSignException If there is an error decrypting
+     */
     private String decryptMessage(String encMessage) throws KEzSignException
     {
         try
@@ -566,9 +608,9 @@ public class EzSignClient
     /**
      * Sends the message to the server and gets the response string
      *
-     * @param clearMessage
-     * @return
-     * @throws KEzSignConnectException
+     * @param clearMessage The formatted message
+     * @return The response
+     * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
     private String sendMessage(String clearMessage) throws KEzSignConnectException
     {

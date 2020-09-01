@@ -16,9 +16,9 @@ public class KEzSignReqMsg extends KEzSignMsg
     /**
      * Message Format is:
      * MESSAGE_ID : CHANNEL : DATA1 : DATA2...
-     * @param messageId
-     * @param channel
-     * @throws KEzSignException
+     * @param messageId The message ID e.g. SIGN
+     * @param channel The channel name
+     * @throws KEzSignException If there is an error
      */
     public KEzSignReqMsg(String messageId, String channel) throws KEzSignException
     {
@@ -34,7 +34,8 @@ public class KEzSignReqMsg extends KEzSignMsg
 
     /**
      * Creates the number of items required and sets them all to empty string
-     * @param size
+     *
+     * @param size The number of items
      */
     public void initDataItems(int size)
     {
@@ -48,7 +49,7 @@ public class KEzSignReqMsg extends KEzSignMsg
      * MESSAGE_ID : CHANNEL : DATA1 : DATA2...
      * Returned as a string
      *
-     * @return
+     * @return The full message
      */
     public String getMessage()
     {

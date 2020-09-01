@@ -29,8 +29,8 @@ public class KEncrypt
     /**
      * Constructor
      *
-     * @param password
-     * @throws KEzSignException
+     * @param password The password
+     * @throws KEzSignException If there is an error
      */
     public KEncrypt(String password) throws KEzSignException
     {
@@ -43,8 +43,9 @@ public class KEncrypt
     /**
      * Encrypts the supplied data with the password passed to the constructor
      * Returns a base64 string containing the encrypted data
-     * @param data
-     * @return
+     * @param data The data to encrypt
+     * @return The encrypted data
+     * @throws KEzSignException If there is an error
      */
     public String encryptData(String data) throws KEzSignException
     {
@@ -55,8 +56,9 @@ public class KEncrypt
     /**
      * Decrypts the supplied data with the password passed to the constructor
      * Returns the clear text string
-     * @param b64Data
-     * @return
+     * @param b64Data The data to decrypt
+     * @return The clear data
+     * @throws KEzSignException If there is an error
      */
     public String decryptData(String b64Data) throws KEzSignException
     {
@@ -71,8 +73,8 @@ public class KEncrypt
 
     /**
      * A utility method which generates a number of random bytes.  Used in IV and salt generation.
-     * @param numBytes
-     * @return
+     * @param numBytes The number of random bytes
+     * @return The random bytes
      */
     private byte[] generateRandomBytes(int numBytes)
     {
@@ -90,8 +92,8 @@ public class KEncrypt
      * 8-15  16   IV
      * 16->  n    Encrypted data
      * The 8 salt bytes are returned.
-     * @param originalData
-     * @return
+     * @param originalData The original data
+     * @return The Salt that was contained in the data
      */
     private byte[] extractSalt(byte[] originalData)
     {
@@ -111,8 +113,8 @@ public class KEncrypt
      * 8-15  16   IV
      * 16->  n    Encrypted data
      * The 16 IV bytes are returned.
-     * @param originalData
-     * @return
+     * @param originalData The original data
+     * @return The IV extracted from the original data
      */
     private byte[] extractIV(byte[] originalData)
     {
@@ -130,8 +132,9 @@ public class KEncrypt
 
     /**
      * Generates an AES key based on the Password (which is a static variable) and the salt provided
-     * @param salt
-     * @return
+     * @param salt The salt value
+     * @return The key
+     * @throws KEzSignException If there is an error
      */
     private SecretKey generateKey(String password, byte[] salt) throws KEzSignException
     {
@@ -159,8 +162,9 @@ public class KEncrypt
      * 0-7   8    Salt
      * 8-15  16   IV
      * 16->  n    Encrypted data
-     * @param data
-     * @return
+     * @param data The data to encrypt
+     * @return The encrypted data
+     * @throws KEzSignException If there is an error
      */
     private byte[] encryptData(String password, byte[] data) throws KEzSignException
     {
@@ -204,7 +208,10 @@ public class KEncrypt
      * 8-15  16   IV
      * 16->  n    Encrypted data     * @param data
      * The clear data is returned.
-     * @return
+     * @param password The password to decrypt under
+     * @param data The data to decrypt
+     * @return The decrypted data
+     * @throws KEzSignException If there is an error
      */
     private byte[] decryptData(String password, byte[] data) throws KEzSignException
     {

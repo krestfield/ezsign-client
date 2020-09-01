@@ -21,6 +21,13 @@ public class KSignDataReqMsg extends KEzSignReqMsg
     final int TRANS_ID_INDEX = 4;
     final int NUM_ITEMS = 5;
 
+    /**
+     *
+     * @param channel The channel name
+     * @param dataToSign The data to sign
+     * @param isDigest Whether the data is a digest or not
+     * @throws KEzSignException If there is an error
+     */
     public KSignDataReqMsg(String channel, byte[] dataToSign, boolean isDigest) throws KEzSignException
     {
         super(MESSAGE_ID, channel);
@@ -35,6 +42,13 @@ public class KSignDataReqMsg extends KEzSignReqMsg
         m_msgDataItems[IS_DIGEST_INDEX] = isDigest ? TRUE_STR : FALSE_STR;
     }
 
+    /**
+     *
+     * @param channel The channel name
+     * @param dataToSign The data to sign
+     * @param signatureType If the da ta is RAW of P7
+     * @throws KEzSignException If there is an error
+     */
     public KSignDataReqMsg(String channel, byte[] dataToSign, int signatureType) throws KEzSignException
     {
         this(channel, dataToSign, false);
@@ -49,6 +63,15 @@ public class KSignDataReqMsg extends KEzSignReqMsg
         }
     }
 
+    /**
+     *
+     * @param channel The channel name
+     * @param dataToSign The data to sign
+     * @param isDigest Whether the data is a digest or not
+     * @param hashAlg The hash algorithm
+     * @param transId The transation ID
+     * @throws KEzSignException If there is an error
+     */
     public KSignDataReqMsg(String channel, byte[] dataToSign, boolean isDigest, String hashAlg, String transId) throws KEzSignException
     {
         this(channel, dataToSign, isDigest);

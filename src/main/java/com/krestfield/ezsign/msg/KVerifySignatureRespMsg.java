@@ -11,6 +11,11 @@ public class KVerifySignatureRespMsg extends KEzSignRespMsg
 {
     public final static String MESSAGE_ID = "IREV";
 
+    /**
+     *
+     * @param fullMessage The complete message
+     * @throws KEzSignException If there is an error
+     */
     public KVerifySignatureRespMsg(String fullMessage) throws KEzSignException
     {
         super(fullMessage);

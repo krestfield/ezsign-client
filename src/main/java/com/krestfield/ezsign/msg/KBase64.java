@@ -58,7 +58,9 @@ public class KBase64
      * than throwing an error. It does this by pre-parsing the
      * input and generating from that a count of VALID input
      * characters.
-     **/
+     * @param b64Str The base64 string to convert
+     * @return The binary data
+     */
     static public byte[] FromBase64String(String b64Str)
     {
         // as our input could contain non-BASE64 data (newlines,
