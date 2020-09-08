@@ -9,112 +9,112 @@
     <packaging>jar</packaging>
     <version>4.0.0</version>
 
-	<name>EzSign Client</name>
-	<description>
-		The java client that can be incorporated into java applications to interface to an EzSign or PKCloud server instance
-		Other interfaces available are .NET and REST API (PkCloud only)
-	</description>
-	<url>https://krestfield.com/index.php/pkcloud</url>
+    <name>EzSign Client</name>
+    <description>
+        The java client that can be incorporated into java applications to interface to an EzSign or PKCloud server instance
+        Other interfaces available are .NET and REST API (PkCloud only)
+    </description>
+    <url>https://krestfield.com/index.php/pkcloud</url>
 
-	<licenses>
-		<license>
-			<name>MIT License</name>
-			<url>http://www.opensource.org/licenses/mit-license.php</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <licenses>
+	    <license>
+		<name>MIT License</name>
+		<url>http://www.opensource.org/licenses/mit-license.php</url>
+		<distribution>repo</distribution>
+	    </license>
+    </licenses>
 
-	<developers>
-		<developer>
-			<organization>Krestfield Limited</organization>
-			<organizationUrl>https://krestfield.com</organizationUrl>
-			<timezone>Europe/London</timezone>
-		</developer>
-	</developers>
+    <developers>
+        <developer>
+            <organization>Krestfield Limited</organization>
+            <organizationUrl>https://krestfield.com</organizationUrl>
+            <timezone>Europe/London</timezone>
+        </developer>
+    </developers>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
-		<repository>
-			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
-	</distributionManagement>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <build>
-		<finalName>${project.name}-${project.version}</finalName>
+        <finalName>${project.name}-${project.version}</finalName>
         <plugins>
              <plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				 <version>3.2.0</version>
-				<executions>
-				  <execution>
-					<id>default-jar</id>
-					<phase>package</phase>
-					<goals>
-					  <goal>jar</goal>
-					</goals>
-					<configuration>
-					  <excludes>
-					<exclude>**/test/**</exclude>
-					  </excludes>
-					</configuration>
-				  </execution>
-				</executions>
-	  	    </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.2.0</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                 <version>3.2.0</version>
+                <executions>
+                  <execution>
+                    <id>default-jar</id>
+                    <phase>package</phase>
+                    <goals>
+                      <goal>jar</goal>
+                    </goals>
+                    <configuration>
+                      <excludes>
+                    <exclude>**/test/**</exclude>
+                      </excludes>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
-	<scm>
-		<url>https://github.com/krestfield/ezsign-client</url>
-	</scm>
+    <scm>
+        <url>https://github.com/krestfield/ezsign-client</url>
+    </scm>
 
 </project>
