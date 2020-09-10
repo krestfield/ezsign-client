@@ -9,7 +9,7 @@ REST interface is also available.  Details here:
   https://s3.eu-west-2.amazonaws.com/krestfield/restapispecification.pdf
 
 Usage:
-
+```java
   String serverIPAddress = "127.0.0.1";
   int serverPortNumber = 5656;
   String channelName = "TEST";
@@ -27,7 +27,7 @@ Usage:
 
   // Verify the signature
   client.verifySignature(channelName, signature, dataToSign, false);
-  
+```  
 
 
 
