@@ -11,6 +11,8 @@ import com.krestfield.ezsign.msg.KVerifySignatureReqMsg;
 import com.krestfield.ezsign.msg.KVerifySignatureRespMsg;
 import com.krestfield.ezsign.utils.KEncrypt;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -35,7 +37,9 @@ public class EzSignClient
     /**
      * Local properties
      */
-    private Socket socket = null;
+    private Socket m_socket = null;
+    private SSLSocketFactory m_sslSockFactory = null;
+    boolean m_useTls = false;
     String m_host;
     int m_port;
 
@@ -71,6 +75,19 @@ public class EzSignClient
     }
 
     /**
+     * Call to enable TLS.  Note that the server must be configured to also use TLS
+     *
+     * @return
+     */
+    public EzSignClient useTls()
+    {
+        m_sslSockFactory = (SSLSocketFactory)SSLSocketFactory.getDefault();
+        m_useTls = true;
+
+        return this;
+    }
+
+    /**
      *
      * @param host The name of the host to connect to - IP address or hostname
      * @param port The port the EzSign server is listening on
@@ -93,8 +110,7 @@ public class EzSignClient
      */
     public EzSignClient(String host, int port, int connectTimeoutInMs, int readTimeoutInMs)
     {
-        m_host = host;
-        m_port = port;
+        this(host, port);
 
         if (readTimeoutInMs > 0)
             m_readTimeoutMs = readTimeoutInMs;
@@ -172,7 +188,6 @@ public class EzSignClient
     {
         return m_port;
     }
-
 
     /**
      * Generates a signature and returns the produced PKCS#7
@@ -421,7 +436,6 @@ public class EzSignClient
         }
     }
 
-
     /**
      * Encrypts the data provided in dataToEncrypt with the key referenced by keyLabel
      *
@@ -508,9 +522,14 @@ public class EzSignClient
         {
             try
             {
-                socket.connect(new InetSocketAddress(m_host, m_port), CONNECT_TIMEOUT/*m_connectTimeoutMs*/);
-                socket.setSoLinger(true, 0);
-                socket.setSoTimeout(m_readTimeoutMs);
+                m_socket.connect(new InetSocketAddress(m_host, m_port), CONNECT_TIMEOUT);
+                if (m_useTls)
+                {
+                    SSLSocket sock = (SSLSocket) m_socket;
+                    sock.startHandshake();
+                }
+                m_socket.setSoLinger(true, 0);
+                m_socket.setSoTimeout(m_readTimeoutMs);
 
                 connected = true;
             }
@@ -527,7 +546,13 @@ public class EzSignClient
                 {
                     // If we get here the socket is probably overloaded, trying to reconnect
                     // will just keep failing, so create new
-                    try { socket = new Socket(); } catch (Exception e){}
+                    try {
+                        m_socket = new Socket();
+                        if (m_useTls)
+                            m_socket = m_sslSockFactory.createSocket();
+                        else
+                            m_socket = new Socket();
+                    } catch (Exception e){}
                     numRetries++;
                     try { Thread.sleep(RETRY_CONNECT_WAIT_MS); } catch (Exception e){ }
                 }
@@ -542,9 +567,9 @@ public class EzSignClient
     {
         try
         {
-            if (socket != null)
+            if (m_socket != null)
             {
-                socket.close();
+                m_socket.close();
                 // This always throws an exception as the server
                 // closes the input and output streams
             }
@@ -618,8 +643,11 @@ public class EzSignClient
         {
             String encMessage = encryptMessage(clearMessage);
 
-            socket = new Socket();
-            synchronized (socket)
+            if (m_useTls)
+                m_socket = m_sslSockFactory.createSocket();
+            else
+                m_socket = new Socket();
+            synchronized (m_socket)
             {
                 String encRespMessage = null;
 
@@ -631,7 +659,7 @@ public class EzSignClient
                     connect();
 
                     //Send the message to the server
-                    OutputStream os = socket.getOutputStream();
+                    OutputStream os = m_socket.getOutputStream();
                     OutputStreamWriter osw = new OutputStreamWriter(os);
                     BufferedWriter bw = new BufferedWriter(osw);
 
@@ -640,7 +668,7 @@ public class EzSignClient
                     bw.flush();
 
                     //Get the return message from the server
-                    InputStream is = socket.getInputStream();
+                    InputStream is = m_socket.getInputStream();
                     InputStreamReader isr = new InputStreamReader(is);
                     BufferedReader br = new BufferedReader(isr);
                     encRespMessage = br.readLine();
