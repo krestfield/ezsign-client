@@ -9,12 +9,12 @@
     <packaging>jar</packaging>
     <version>4.0.0</version>
 
-    <name>EzSign Client</name>
+    <name>ezsign-client</name>
     <description>
         The java client that can be incorporated into java applications to interface to an EzSign or PKCloud server instance
         Other interfaces available are .NET and REST API (PkCloud only)
     </description>
-    <url>https://krestfield.com/index.php/pkcloud</url>
+    <url>https://krestfield.com/pkcloud</url>
 
     <licenses>
 	    <license>
@@ -50,7 +50,7 @@
     </distributionManagement>
 
     <build>
-        <finalName>${project.name}-${project.version}</finalName>
+        <finalName>ezsign-client-${project.version}</finalName>
         <plugins>
              <plugin>
                 <artifactId>maven-jar-plugin</artifactId>
