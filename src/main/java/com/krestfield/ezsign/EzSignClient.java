@@ -11,16 +11,14 @@ import com.krestfield.ezsign.msg.KVerifySignatureReqMsg;
 import com.krestfield.ezsign.msg.KVerifySignatureRespMsg;
 import com.krestfield.ezsign.utils.KEncrypt;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.security.KeyStore;
 import java.security.cert.X509Certificate;
 
 /**
@@ -62,6 +60,7 @@ public class EzSignClient
     boolean m_usingAuthCode = false;
     KEncrypt m_encrypt = null;
 
+
     /**
      * The Constructor
      *
@@ -85,6 +84,37 @@ public class EzSignClient
         m_useTls = true;
 
         return this;
+    }
+
+    /**
+     * Call to enable client side TLS.  Note that the server must be configured to require a client certificate
+     *
+     * @param clientP12Filename
+     * @param clientP12Password
+     * @return
+     * @throws KEzSignException
+     */
+    public EzSignClient useClientTls(String clientP12Filename, String clientP12Password) throws KEzSignException
+    {
+        try
+        {
+            KeyStore clientKeyStore = KeyStore.getInstance("PKCS12");
+            clientKeyStore.load(new FileInputStream(clientP12Filename), clientP12Password.toCharArray());
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            kmf.init(clientKeyStore, clientP12Password.toCharArray());
+            SSLContext sslContext = SSLContext.getInstance("SSLv3");
+            sslContext.init(kmf.getKeyManagers(), null, null);
+
+            m_sslSockFactory = sslContext.getSocketFactory();
+
+            m_useTls = true;
+
+            return this;
+        }
+        catch (Exception e)
+        {
+            throw new KEzSignException("There was an error opening the connection using client SSL. " + e.getMessage());
+        }
     }
 
     /**
