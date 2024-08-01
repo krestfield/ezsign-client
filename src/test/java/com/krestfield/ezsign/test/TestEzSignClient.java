@@ -18,7 +18,8 @@ public class TestEzSignClient
 {
     public static void main(String args[])
     {
-        testOnlineSignVerify();
+        testClientTLS();
+        //testOnlineSignVerify();
         //testRawSignVerify();
         //testEncryption();
         //testGenerateRandom();
@@ -47,6 +48,29 @@ public class TestEzSignClient
 
             // No TLS but Auth Code
             EzSignClient client = new EzSignClient("demoapi.krestfield.com", 80, "password");
+
+            byte[] signature = client.signData("P7_RSA_SIGN_CHANNEL", "data".getBytes(), false);
+            System.out.println("Generated signature OK");
+            client.verifySignature("P7_RSA_SIGN_CHANNEL", signature, "data".getBytes(), false);
+            System.out.println("Verified signature OK");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static void testClientTLS()
+    {
+        try
+        {
+            // To use TLS
+            String p12Filename = "";
+            String p12Password = "";
+            EzSignClient client = new EzSignClient("demo.krestfield.com", 80).useClientTls(p12Filename, p12Password);
+
+            // No TLS but Auth Code
+            //EzSignClient client = new EzSignClient("demoapi.krestfield.com", 80, "password");
 
             byte[] signature = client.signData("P7_RSA_SIGN_CHANNEL", "data".getBytes(), false);
             System.out.println("Generated signature OK");
