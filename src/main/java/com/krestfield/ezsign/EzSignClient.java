@@ -102,7 +102,7 @@ public class EzSignClient
             clientKeyStore.load(new FileInputStream(clientP12Filename), clientP12Password.toCharArray());
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
             kmf.init(clientKeyStore, clientP12Password.toCharArray());
-            SSLContext sslContext = SSLContext.getInstance("SSLv3");
+            SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(kmf.getKeyManagers(), null, null);
 
             m_sslSockFactory = sslContext.getSocketFactory();
@@ -727,10 +727,10 @@ public class EzSignClient
         }
         catch (Exception e)
         {
-            throw new KEzSignConnectException("There was an error connecting to the EzSign server.  " +
+            throw new KEzSignConnectException("There was an error connecting to the EzSign server. " +
                     "Ensure the server is running on host " + m_host + " and listening on port " + m_port +
-                    " and there is connectivity between this client and the server.  " +
-                    "If auth code is in use, check both the client and server are using the same code. " + e.getMessage());
+                    " and there is connectivity between this client and the server. " +
+                    "If auth code is in use, check both the client and server are using the same code. Error Details: " + e.getMessage());
         }
         finally
         {

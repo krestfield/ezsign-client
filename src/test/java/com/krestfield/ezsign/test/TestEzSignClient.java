@@ -65,16 +65,17 @@ public class TestEzSignClient
         try
         {
             // To use TLS
-            String p12Filename = "";
-            String p12Password = "";
-            EzSignClient client = new EzSignClient("demo.krestfield.com", 80).useClientTls(p12Filename, p12Password);
+            String p12Filename = "C:\\EzSignV4.2.3\\EzSignServer\\keystores\\127.0.0.1.p12";
+            String p12Password = "password";
+            EzSignClient client = new EzSignClient("127.0.0.1", 5656).useTls().useClientTls(p12Filename, p12Password);
+            //EzSignClient client = new EzSignClient("127.0.0.1", 5656).useTls(); // WORKING
 
             // No TLS but Auth Code
             //EzSignClient client = new EzSignClient("demoapi.krestfield.com", 80, "password");
 
-            byte[] signature = client.signData("P7_RSA_SIGN_CHANNEL", "data".getBytes(), false);
+            byte[] signature = client.signData("SOFT", "data".getBytes(), false);
             System.out.println("Generated signature OK");
-            client.verifySignature("P7_RSA_SIGN_CHANNEL", signature, "data".getBytes(), false);
+            client.verifySignature("SOFT", signature, "data".getBytes(), false);
             System.out.println("Verified signature OK");
         }
         catch (Exception e)
