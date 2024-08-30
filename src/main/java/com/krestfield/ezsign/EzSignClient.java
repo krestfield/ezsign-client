@@ -74,9 +74,9 @@ public class EzSignClient
     }
 
     /**
-     * Call to enable TLS.  Note that the server must be configured to also use TLS
+     * Call to enable TLS connections to the server.  Note that the server must be configured to also use TLS
      *
-     * @return
+     * @return The new EzSignClient instance
      */
     public EzSignClient useTls()
     {
@@ -91,14 +91,14 @@ public class EzSignClient
      *
      * @param clientP12Filename
      * @param clientP12Password
-     * @return
+     * @return The new EzSignClient instance
      * @throws KEzSignException
      */
-    public EzSignClient useClientTls(String clientP12Filename, String clientP12Password) throws KEzSignException
+    public EzSignClient useClientTls(String clientP12Filename, String clientP12Password, String keyStoreType) throws KEzSignException
     {
         try
         {
-            KeyStore clientKeyStore = KeyStore.getInstance("PKCS12");
+            KeyStore clientKeyStore = KeyStore.getInstance(keyStoreType);
             clientKeyStore.load(new FileInputStream(clientP12Filename), clientP12Password.toCharArray());
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
             kmf.init(clientKeyStore, clientP12Password.toCharArray());
@@ -567,7 +567,7 @@ public class EzSignClient
             {
                 if (numRetries >= maxNumRetries)
                 {
-                    throw new KEzSignConnectException("There was an error connecting to the EzSign server.  " +
+                    throw new KEzSignConnectException("There was an error connecting to the EzSign server. " +
                             "Ensure the server is running on host " + m_host + " and listening on port " + m_port +
                             " and there is connectivity between this client and the server. " +
                             "If auth code is in use, check both the client and server are using the same code. " + exception.getMessage());
@@ -667,7 +667,7 @@ public class EzSignClient
      * @return The response
      * @throws KEzSignConnectException If unable to connect to the EzSign server
      */
-    private String sendMessage(String clearMessage) throws KEzSignConnectException
+    private synchronized String sendMessage(String clearMessage) throws KEzSignConnectException
     {
         try
         {
@@ -677,49 +677,47 @@ public class EzSignClient
                 m_socket = m_sslSockFactory.createSocket();
             else
                 m_socket = new Socket();
-            synchronized (m_socket)
+
+            String encRespMessage = null;
+
+            int retryCount = 0;
+            // Under extreme load (CPU near 100% 500 threads+) the server may occasionally
+            // return an empty message.  Check for this here and re-send, up to MAX_SEND_RETRIES
+            while ((encRespMessage == null || encRespMessage.isEmpty()) && retryCount < MAX_SEND_RETRIES)
             {
-                String encRespMessage = null;
+                connect();
 
-                int retryCount = 0;
-                // Under extreme load (CPU near 100% 500 threads+) the server may occasionally
-                // return an empty message.  Check for this here and re-send, up to MAX_SEND_RETRIES
-                while ((encRespMessage == null || encRespMessage.isEmpty()) && retryCount < MAX_SEND_RETRIES)
-                {
-                    connect();
+                //Send the message to the server
+                OutputStream os = m_socket.getOutputStream();
+                OutputStreamWriter osw = new OutputStreamWriter(os);
+                BufferedWriter bw = new BufferedWriter(osw);
 
-                    //Send the message to the server
-                    OutputStream os = m_socket.getOutputStream();
-                    OutputStreamWriter osw = new OutputStreamWriter(os);
-                    BufferedWriter bw = new BufferedWriter(osw);
+                String sendMessage = encMessage + "\n";
+                bw.write(sendMessage);
+                bw.flush();
 
-                    String sendMessage = encMessage + "\n";
-                    bw.write(sendMessage);
-                    bw.flush();
+                //Get the return message from the server
+                InputStream is = m_socket.getInputStream();
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                encRespMessage = br.readLine();
 
-                    //Get the return message from the server
-                    InputStream is = m_socket.getInputStream();
-                    InputStreamReader isr = new InputStreamReader(is);
-                    BufferedReader br = new BufferedReader(isr);
-                    encRespMessage = br.readLine();
+                is.close();
+                os.close();
 
-                    is.close();
-                    os.close();
+                disconnect();
 
-                    disconnect();
+                retryCount++;
 
-                    retryCount++;
-
-                    // Wait, and then try again
-                    if (encRespMessage == null || encRespMessage.isEmpty())
-                        // Try to sleep.  If fails, just continue
-                        try { Thread.sleep(RETRY_SEND_WAIT_MS); }catch (Exception e){};
-                }
-
-                String clearRespMessage = decryptMessage(encRespMessage);
-
-                return clearRespMessage;
+                // Wait, and then try again
+                if (encRespMessage == null || encRespMessage.isEmpty())
+                    // Try to sleep.  If fails, just continue
+                    try { Thread.sleep(RETRY_SEND_WAIT_MS); }catch (Exception e){};
             }
+
+            String clearRespMessage = decryptMessage(encRespMessage);
+
+            return clearRespMessage;
         }
         catch (KEzSignConnectException connEx)
         {

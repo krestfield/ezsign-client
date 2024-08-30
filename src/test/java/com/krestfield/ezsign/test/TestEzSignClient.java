@@ -64,11 +64,14 @@ public class TestEzSignClient
     {
         try
         {
+            System.out.println("testClientTLS");
             // To use TLS
-            String p12Filename = "C:\\EzSignV4.2.3\\EzSignServer\\keystores\\127.0.0.1.p12";
-            String p12Password = "password";
-            EzSignClient client = new EzSignClient("127.0.0.1", 5656).useTls().useClientTls(p12Filename, p12Password);
+            String keystoreFilename = "C:\\EzSignV4.2.3\\EzSignServer\\keystores\\127.0.0.1.p12";
+            //String keystoreFilename = "C:\\EzSignV4.2.3\\EzSignServer\\keystores\\127.0.0.1.jks";
+            String keystorePassword = "password";
+            EzSignClient client = new EzSignClient("127.0.0.1", 5656).useTls().useClientTls(keystoreFilename, keystorePassword, "PKCS12");
             //EzSignClient client = new EzSignClient("127.0.0.1", 5656).useTls(); // WORKING
+            //EzSignClient client = new EzSignClient("127.0.0.1", 5656);
 
             // No TLS but Auth Code
             //EzSignClient client = new EzSignClient("demoapi.krestfield.com", 80, "password");
