@@ -28,7 +28,7 @@ import java.security.cert.X509Certificate;
  *
  * Provides a simple API to generate and verify digital signatures
  *
- * Copyright (C) 2017 Krestfield Ltd - All Rights Reserved
+ * Copyright (C) 2024 Krestfield Ltd - All Rights Reserved
  */
 public class EzSignClient
 {
@@ -89,19 +89,20 @@ public class EzSignClient
     /**
      * Call to enable client side TLS.  Note that the server must be configured to require a client certificate
      *
-     * @param clientP12Filename
-     * @param clientP12Password
+     * @param clientKeystoreFilename The full path to the client keystore file
+     * @param clientKeystorePassword The password protecting the keystore file
+     * @param keyStoreType The keystore type. Can be either "PKCS12" or "JKS"
      * @return The new EzSignClient instance
      * @throws KEzSignException
      */
-    public EzSignClient useClientTls(String clientP12Filename, String clientP12Password, String keyStoreType) throws KEzSignException
+    public EzSignClient useClientTls(String clientKeystoreFilename, String clientKeystorePassword, String keyStoreType) throws KEzSignException
     {
         try
         {
             KeyStore clientKeyStore = KeyStore.getInstance(keyStoreType);
-            clientKeyStore.load(new FileInputStream(clientP12Filename), clientP12Password.toCharArray());
+            clientKeyStore.load(new FileInputStream(clientKeystoreFilename), clientKeystorePassword.toCharArray());
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-            kmf.init(clientKeyStore, clientP12Password.toCharArray());
+            kmf.init(clientKeyStore, clientKeystorePassword.toCharArray());
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(kmf.getKeyManagers(), null, null);
 

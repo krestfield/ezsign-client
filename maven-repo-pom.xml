@@ -7,7 +7,7 @@
     <groupId>com.krestfield.ezsign</groupId>
     <artifactId>ezsign-client</artifactId>
     <packaging>jar</packaging>
-    <version>4.0.0</version>
+    <version>4.3.0</version>
 
     <name>ezsign-client</name>
     <description>
