@@ -1,0 +1,64 @@
+package com.krestfield.ezsign.client.msg;
+
+import com.krestfield.ezsign.client.KEzSignException;
+
+/**
+ * Copyright Krestfield 2016
+ */
+public class KSignDataRespMsg extends KEzSignRespMsg
+{
+    final String MESSAGE_ID = "NGIS";
+    final int SIG_INDEX = 0;
+
+    private byte[] m_signature;
+    private String m_b64Signature;
+
+    /**
+     *
+     * @param fullMessage The complete message
+     * @throws KEzSignException If there is an error
+     */
+    public KSignDataRespMsg(String fullMessage) throws KEzSignException
+    {
+        super(fullMessage);
+
+        // Error messages do not contain any extra data and the response code and error
+        // message would have been dealt with by the parent class
+        if (m_respDataItems == null || m_respDataItems.length == 0)
+            return;
+            //throw new KEzSignException("No signature was returned in the response data");
+
+        try
+        {
+            if (m_respDataItems[SIG_INDEX] == null)
+                throw new KEzSignException("The signature contained in the response was empty");
+
+            m_b64Signature = m_respDataItems[SIG_INDEX];
+            m_signature = KBase64.FromBase64String(m_respDataItems[SIG_INDEX]);
+        }
+        catch (Exception e)
+        {
+            throw new KEzSignException("There was an error converting the signature data: " + e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @return The signature data
+     */
+    public byte[] getSignature()
+    {
+        return m_signature;
+    }
+
+    /**
+     *
+     * @return The signature data formated as Base64
+     */
+    public String getB64Signature()
+    {
+        return m_b64Signature;
+    }
+}
+/********************************************* END OF FILE *****************************************************
+ ***************************************************************************************************************/
