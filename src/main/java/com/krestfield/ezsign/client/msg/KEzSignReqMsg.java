@@ -27,6 +27,7 @@ public class KEzSignReqMsg extends KEzSignMsg
 
         if (channel == null || channel.length() == 0)
             throw new KEzSignException("Channel name is null or empty");
+        checkField("channel name", channel);
 
         m_messageId = messageId;
         m_channelName = channel;
@@ -37,6 +38,20 @@ public class KEzSignReqMsg extends KEzSignMsg
      *
      * @param size The number of items
      */
+    /**
+     * Checks a value does not contain the message delimiter or a line break, which would change the fields of
+     * the message (or end it) and could be used to alter the request
+     *
+     * @param name What the value is, for the error message
+     * @param value The value
+     * @throws KEzSignException If the value contains a character that cannot be sent
+     */
+    public static void checkField(String name, String value) throws KEzSignException
+    {
+        if (value != null && (value.contains(DELIMITER) || value.indexOf('\n') >= 0 || value.indexOf('\r') >= 0))
+            throw new KEzSignException("The " + name + " cannot contain '" + DELIMITER + "' or a line break");
+    }
+
     public void initDataItems(int size)
     {
         m_msgDataItems = new String[size];
