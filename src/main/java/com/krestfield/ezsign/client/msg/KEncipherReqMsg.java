@@ -37,7 +37,10 @@ public class KEncipherReqMsg extends KEzSignReqMsg
         m_msgDataItems[DATA_INDEX] = KBase64.ToBase64String(data);
 
         if (keyLabel != null && !keyLabel.isEmpty())
+        {
+            checkField("key label", keyLabel);
             m_msgDataItems[KEY_LABEL_INDEX] = keyLabel;
+        }
     }
 }
 /********************************************* END OF FILE *****************************************************

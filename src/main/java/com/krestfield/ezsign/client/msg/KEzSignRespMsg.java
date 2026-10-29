@@ -46,14 +46,24 @@ public class KEzSignRespMsg extends KEzSignMsg
         componentIndex++;
 
         // Response Code
-        m_responseCode = Integer.parseInt(components[componentIndex]);
+        try
+        {
+            m_responseCode = Integer.parseInt(components[componentIndex].trim());
+        }
+        catch (NumberFormatException e)
+        {
+            throw new KEzSignException("Response received from the server was not valid. The response code was not a number");
+        }
         componentIndex++;
 
-        // If response code not 0, get error message
+        // If response code not 0, the rest of the message is the error message, which may itself contain the
+        // delimiter
         if (m_responseCode != 0)
         {
-            m_errorMsg = components[componentIndex];
-            componentIndex++;
+            int afterCode = fullMessage.indexOf(KEzSignMsg.DELIMITER, fullMessage.indexOf(KEzSignMsg.DELIMITER) + 1);
+            m_errorMsg = afterCode < 0 ? "" : fullMessage.substring(afterCode + 1);
+            m_respDataItems = new String[0];
+            return;
         }
 
         // Copy the remaining items into the data items array for the
@@ -63,14 +73,19 @@ public class KEzSignRespMsg extends KEzSignMsg
         while (componentIndex < components.length)
         {
             m_respDataItems[newIndex] = components[componentIndex];
+            newIndex++;
             componentIndex++;
         }
     }
 
     /**
-     *
-     * @return The response code
+     * Returns the message ID the server returned
      */
+    public String getReturnedMessageId()
+    {
+        return m_returnedMsgId;
+    }
+
     public int getResponseCode()
     {
         return m_responseCode;
