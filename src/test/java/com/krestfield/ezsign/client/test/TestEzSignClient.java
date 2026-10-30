@@ -23,13 +23,34 @@ import java.util.Base64;
  */
 public class TestEzSignClient
 {
+    public static String channelName = "TESTCHAN";
     public static void main(String args[])
     {
-        testClientTLS();
+        testRestApi();
+        //testClientTLS();
         //testOnlineSignVerify();
         //testRawSignVerify();
         //testEncryption();
         //testGenerateRandom();
+    }
+
+    public static void testRestApi()
+    {
+        try
+        {
+            EzSignClient client = new EzSignClient("127.0.0.1", 4434).useRestApi().useApiToken("ezs_0iEM6vMejMsf19AfM_V_DakP1qKg61vfHS71J__LVD8")
+                    .useTrustStore("C:\\ezsign-v4.6.0\\EzSignServer\\config\\client-cas.p12", "password", "PKCS12");
+            byte[] signature = client.signData(channelName, "Hello World".getBytes(), false);
+            System.out.println("Signed Data over REST API OK");
+            client.verifySignature(channelName, signature, "Hello World".getBytes(), false);
+            System.out.println("Verified signature over REST API OK");
+            byte[] rnd = client.generateRandomBytes(channelName, 32);
+            System.out.println("Generated random bytes over REST API OK: " + Base64.getEncoder().encodeToString(rnd));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static void testGenerateRandom()
