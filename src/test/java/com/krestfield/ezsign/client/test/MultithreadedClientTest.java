@@ -20,9 +20,9 @@ public class MultithreadedClientTest
 
             String keystorePassword = "password";
 
-            EzSignClient client = new EzSignClient("127.0.0.1", 5656).useTls().useClientTls(keystoreFilename, keystorePassword, "PKCS12");
+            //EzSignClient client = new EzSignClient("127.0.0.1", 5656).useTls().useClientTls(keystoreFilename, keystorePassword, "PKCS12");
             //EzSignClient client = new EzSignClient("127.0.0.1", 5656).useTls(); // WORKING
-            //EzSignClient client = new EzSignClient("127.0.0.1", 5656);
+            EzSignClient client = new EzSignClient("127.0.0.1", 5656);
 
 
             MultithreadedClientTestThread[] threads = new MultithreadedClientTestThread[numThreads];
